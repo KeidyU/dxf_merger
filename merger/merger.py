@@ -1,9 +1,9 @@
 import sys
 import ezdxf
 from ezdxf.addons import Importer
-import json
-from os import listdir
-from os.path import isfile, join
+# import json
+# from os import listdir
+# from os.path import isfile, join
 
 """
 The idea of this script is to merge n dxf files (from pathin) into a target dxf file (into pathout)
@@ -36,32 +36,35 @@ def merge(source, target):
         print("Error -> ", e.__class__)
 
 
-# opening JSON file
-jsondata = json.load(open("data.json"))
+"""
+Main Function
+"""
+if __name__ == "__main__":
+    # opening JSON file
+    #jsondata = json.load(open("data.json"))
+    files = []
 
-if jsondata["use_filelist"]:
-    # it use the hardcode file list from data.json
-    files = jsondata["filelist"]
-else:
-    # alternative way of get filelist only using pathin (no filename hardcoding), only dxf files
-    files = [
-        f
-        for f in listdir(jsondata["pathin"])
-        if isfile(join(jsondata["pathin"], f))
-        if f.lower().endswith(".dxf")
-    ]
+    dxf_1 = sys.argv[1]
+    dxf_2 = sys.argv[2]
+    output = sys.argv[3]
+    # dxf_1 = "C:/Users/Keidy/Desktop/merge-dxf/dxf_merger/in/instrumentos.dxf"
+    # dxf_2 = "C:/Users/Keidy/Desktop/merge-dxf/dxf_merger/in/topo.dxf"
+    # output = "C:/Users/Keidy/Desktop/merge-dxf/dxf_merger/out/merge_5.dxf"
 
-# empty target dxf
-target = ezdxf.new()
+    files.append(dxf_1)
+    files.append(dxf_2)
 
-# merger with filelist
-for file in files:
-    print("filein ->", file)
-    merge(jsondata["pathin"] + file, target)
+    # empty target dxf
+    target = ezdxf.new()
 
-# save merged dfx target
-try:
-    print("target ->", jsondata["targetfile"])
-    target.saveas(jsondata["pathout"] + jsondata["targetfile"])
-except Exception as e:
-    print("Error -> ", e.__class__)
+    # merger with filelist
+    for file in files:
+        print("filein ->", file)
+        merge(file, target)
+
+    # save merged dfx target
+    try:
+        print("target ->", output)
+        target.saveas(output)
+    except Exception as e:
+        print("Error -> ", e.__class__)
